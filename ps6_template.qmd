@@ -231,7 +231,7 @@ hierarchical=pd.DataFrame({'type': thirty_two, 'subtype': thirty_two, 'updated_t
 ```
 
 ```{python}
-jam=['Jam']
+jam=['JAM']
 jam_subset=df[df['type']=='JAM']
 jam_array=jam_subset['subtype'].unique()
 jam_subtypes=jam_array.tolist()
@@ -239,7 +239,7 @@ jam_type=len(jam_subtypes)*jam
 ```
 
 ```{python}
-accident=['Accident']
+accident=['ACCIDENT']
 accident_subset=df[df['type']=='ACCIDENT']
 accident_array=(accident_subset['subtype'].unique())
 accident_subtypes=accident_array.tolist()
@@ -247,7 +247,7 @@ accident_type=len(accident_subtypes)*accident
 ```
 
 ```{python}
-road_closed=['Road Closed']
+road_closed=['ROAD_CLOSED']
 road_closed_subset=df[df['type']=='ROAD_CLOSED']
 road_closed_array=road_closed_subset['subtype'].unique()
 road_closed_subtypes=road_closed_array.tolist()
@@ -255,7 +255,7 @@ road_closed_type=len(road_closed_subtypes)*road_closed
 ```
 
 ```{python}
-hazard=['Hazard']
+hazard=['HAZARD']
 hazard_subset=df[df['type']=='HAZARD']
 hazard_array=hazard_subset['subtype'].unique()
 hazard_subtypes=hazard_array.tolist()
@@ -269,7 +269,7 @@ all_subtypes=jam_subtypes+accident_subtypes+road_closed_subtypes+hazard_subtypes
 
 ```{python}
 #create list for updated subtype col
-on_road=['On Road']
+on_road=['ON_ROAD']
 on_road_list=on_road*10
 on_shoulder=['On Shoulder']
 on_shoulder_list=on_shoulder*4
@@ -298,7 +298,7 @@ hierarchical['updated_subsubtype']=new_subsubtypes
 ```
 
 ```{python}
-hierarchical.head()
+hierarchical.tail(10)
 ```
 ```{python}
 merged=df.merge(hierarchical, on=['type','subtype'], how='left')
@@ -307,6 +307,13 @@ merged=df.merge(hierarchical, on=['type','subtype'], how='left')
 ```{python}
 merged.head()
 ```
+
+E.C.
+```{python}
+assert all(df['type']==merged['type']), 'Diff Type'
+assert all(df['subtype']==merged['subtype']), 'Diff Subtype'
+```
+
 1. 
 ```{python}
 

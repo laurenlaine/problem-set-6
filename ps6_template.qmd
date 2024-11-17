@@ -223,12 +223,16 @@ df['subtype']=df['subtype'].fillna('Unclassified')
 
 
 4. 
+
+1. 
 ```{python}
 empty_list=[]
 thirty_two=empty_list*32
 hierarchical=pd.DataFrame({'type': thirty_two, 'subtype': thirty_two, 'updated_type':thirty_two, 'updated_subtype':thirty_two, 'updated_subsubtype':thirty_two
 })
 ```
+
+2. 
 
 ```{python}
 jam=['JAM']
@@ -300,6 +304,9 @@ hierarchical['updated_subsubtype']=new_subsubtypes
 ```{python}
 hierarchical.tail(10)
 ```
+
+3. 
+
 ```{python}
 merged=df.merge(hierarchical, on=['type','subtype'], how='left')
 ```
@@ -307,34 +314,11 @@ merged=df.merge(hierarchical, on=['type','subtype'], how='left')
 ```{python}
 merged.head()
 ```
-
-E.C.
-```{python}
-assert all(df['type']==merged['type']), 'Diff Type'
-assert all(df['subtype']==merged['subtype']), 'Diff Subtype'
-```
-
-1. 
-```{python}
-
-```
-
-2. 
-
-```{python}
-
-```
-
-3. 
-
-```{python}
-
-```
-
 4. 
 
 ```{python}
-
+assert all(df['type']==merged['type']), 'Diff Type'
+assert all(df['subtype']==merged['subtype']), 'Diff Subtype'
 ```
 
 
@@ -344,21 +328,111 @@ assert all(df['subtype']==merged['subtype']), 'Diff Subtype'
 
 a. 
 ```{python}
+import re
+merged.head()
+```
 
+```{python}
+test='Point(-87.676685 41.929692)'
+
+check=re.split(r'\(', test, 1)
+re.split('\s', check[1], 1)
+```
+
+```{python}
+def latitude(txt):
+  x=re.split(r'\(', txt, 1)
+  y=re.split(r'\s', x[1], 1)
+  lat= y[0]
+  return lat
+
+
+def longitude(txt):
+  x=re.split(r'\(', txt, 1)
+  y=re.split(r'\s', x[1], 1)
+  long=y[1]
+  long=long.replace(r')', '')
+  return long
+```
+```{python}
+merged['latitude']=merged['geoWKT'].map(latitude)
+merged['longitude']=merged['geoWKT'].map(longitude)
+```
+
+```{python}
+merged.head()
 ```
 
 b. 
-```{python}
 
+```{python}
+merged['latitude']=pd.to_numeric(merged['latitude'])
+merged['longitude']=pd.to_numeric(merged['longitude'])
 ```
 
+```{python}
+merged['binned_lat'] = merged['latitude'].round(2)
+merged['binned_long'] = merged['longitude'].round(2)
+```
+
+```{python}
+grouped=merged.groupby(['binned_lat', 'binned_long']).size()
+grouped=grouped.reset_index()
+grouped.columns=['latitude', 'longitude', 'count']
+```
+```{python}
+grouped.max()
+```
+(-87.56, 42.02) has the most observations with 21325. 
 
 c. 
-```{python}
 
+```{python}
+subset=merged[(merged['updated_type'] == 'JAM') & (merged['updated_subtype'] == 'Unclassified')]
+subset_grouped=subset.groupby(['binned_lat', 'binned_long']).size()
+subset_grouped=subset_grouped.reset_index()
+subset_grouped.columns=['Latitude', 'Longitude', 'Count']
+subset_grouped=subset_grouped.sort_values(by='Count', ascending=False)
+subset_grouped=subset_grouped.head(10)
+subset_grouped['type']='JAM'
+subset_grouped['subtype']='Unclassified'
+print(subset_grouped)
 ```
 
-d. 
+```{python}
+top_tens=[]
+```
+```{python}
+for i in merged['updated_type'].unique():
+  type_set=merged[merged['updated_type']==i]
+  for j in type_set['updated_subtype'].unique():
+    subset = merged[(merged['updated_type'] == i) & (merged['updated_subtype'] == j)]
+    subset_grouped=subset.groupby(['binned_lat', 'binned_long']).size()
+    subset_grouped=subset_grouped.reset_index()
+    subset_grouped.columns=['Latitude', 'Longitude', 'Count']
+    subset_grouped=subset_grouped.sort_values(by='Count', ascending=False)
+    subset_grouped=subset_grouped.head(10)
+    subset_grouped['type']=i
+    subset_grouped['subtype']=j
+    top_tens.append(subset_grouped)
+    print(f'finished {i}:{j}, length{len(subset_grouped)}')
+
+top_ten_df=pd.concat(top_tens, ignore_index=True)
+```
+
+```{python}
+check=merged[merged['updated_type']=='JAM']
+test=check[check['updated_subtype']=='JAM_LIGHT_TRAFFIC']
+```
+
+```{python}
+top_ten_df.to_csv(r"C:\Users\laine\OneDrive\Documents\GitHub\student30538\problem_sets\ps6\top_alerts_map\top_alerts_map.csv")
+```
+The data is filtered based on type and subtype and then aggregated by binned latitude and binned longitude. 
+The dataframe has 155 rows. It has 16 combinations of types and subtypes but type Jam with subtype Jam Light Traffic only has 5 observations so the final length isn't divisible by 10. 
+
+
+2. 
 ```{python}
 
 ```

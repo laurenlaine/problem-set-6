@@ -340,14 +340,14 @@ re.split('\s', check[1], 1)
 ```
 
 ```{python}
-def latitude(txt):
+def longitude(txt):
   x=re.split(r'\(', txt, 1)
   y=re.split(r'\s', x[1], 1)
   lat= y[0]
   return lat
 
 
-def longitude(txt):
+def latitude(txt):
   x=re.split(r'\(', txt, 1)
   y=re.split(r'\s', x[1], 1)
   long=y[1]
@@ -464,7 +464,7 @@ a.
 b. 
 ```{python}
 # MODIFY ACCORDINGLY
-file_path = r"C:\Users\laine\OneDrive\Documents\GitHub\student30538\problem_sets\ps6\top_alerts_map\Boundaries - Neighborhoods.geojson"
+file_path = r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Boundaries - Neighborhoods .geojson"
 #----
 
 with open(file_path) as f:
@@ -501,6 +501,7 @@ for i in merged['updated_type'].unique():
 ```
 
 ```{python}
+#print choices to put in choices list in the app
 choices
 ```
 
@@ -661,7 +662,7 @@ traffic_at_12_screenshot.show()
 ```
 
 c. 
-From the dashboard it appears that construction is done more at night than in the morning. However this answer is concerning because logically construction should usually take place during the day. 
+From the dashboard it appears that construction is done more at night than in the morning.
 
 3:00am UTC is equivalent to 9:00am CST in Chicago. 
 
@@ -681,30 +682,86 @@ construction_at_15.show()
 1. 
 
 
-a. 
+a.
+It would be impractical to collapese the data by alert type and range or hours because there are so many potential ranges of hours. The resulting dataframe would be extremely long. 
+It would be much more efficient to filter the data using >= and <= operators with the existing byhour dataframe than to run the top ten alerts by type for every potential range of hours. 
 
 b. 
 
 ```{python}
+max_long=top_ten_by_hourdf['Longitude'].max()
+min_long=top_ten_by_hourdf['Longitude'].min()
+print(min_long, max_long)
+max_lat=top_ten_by_hourdf['Latitude'].max()
+min_lat=top_ten_by_hourdf['Latitude'].min()
+print(min_lat, max_lat)
+
+```
+```{python}
+heavy_traffic_6_to_9=top_ten_by_hourdf[(top_ten_by_hourdf['hour']>=6)& (top_ten_by_hourdf['hour']<=9)]
+heavy_traffic_6_to_9=heavy_traffic_6_to_9[(heavy_traffic_6_to_9['type']=='JAM')& (heavy_traffic_6_to_9['subtype']=='JAM_HEAVY_TRAFFIC')]
+
+heavy_traffic_6_to_9=alt.Chart(heavy_traffic_6_to_9).mark_point().encode(
+  alt.X('Longitude:Q').scale(domain=(min_long, max_long)),
+  alt.Y('Latitude:Q').scale(domain=(min_lat, max_lat)),
+  alt.Size('Count:Q'))
+
+chi_map+heavy_traffic_6_to_9
 
 ```
 
+```{python}
+merged.head
+```
 2. 
 
 a. 
 
+```{python}
+app3_ui=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_ui.png")
+app3_ui.show()
+```
 
 b. 
+
+```{python}
+app3_heavy_traffic=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_heavy_traffic_6_to_9.png")
+app3_heavy_traffic.show
+```
     
 3. 
 
 a. 
-    
+
+```{python}
+app3_switch_button=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_switch_button.png")\
+app3_switch_button.show()
+```
+The possible values for input.switch_button are True meaning the button would start switched to hour range and False meaning the button would start switched to just hour.    
 
 b. 
 
+```{python}
+app3_one_hour=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_one_hour.png")
+app3_one_hour.show()
+```
+
+```{python}
+app3_hour_range=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_range_of_hours.png")
+app3_hour_range.show()
+```
 
 c. 
+
+```{python}
+app3_one_hour_plot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_plot_one_hour.png")
+app3_one_hour_plot.show()
+```
+
+```{python}
+app3_hour_range_plot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_plot_hour_range.png")
+app3_hour_range_plot.show()
+```
 
 
 d.

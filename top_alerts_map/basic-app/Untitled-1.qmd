@@ -1,0 +1,23 @@
+---
+title: "Untitled"
+format: html
+---
+
+@render_altair
+    def top_ten_map():
+        subset_data = subset()  # Call the reactive subset() to get the actual data
+        if subset_data is None or subset_data.empty:
+            return alt.Chart()  # Return an empty chart if the subset data is empty or None
+    
+    # Check if the subset data has valid Longitude and Latitude columns
+        if 'Longitude' not in subset_data or 'Latitude' not in subset_data:
+            return alt.Chart()  # Return empty chart if columns are missing
+    
+    # Create the basic map using points for longitude and latitude
+        chart = alt.Chart(subset_data).mark_circle(size=60).encode(
+        alt.X('Longitude:Q', scale=alt.Scale(domain=[subset_data['Longitude'].min(), subset_data['Longitude'].max()])),
+        alt.Y('Latitude:Q', scale=alt.Scale(domain=[subset_data['Latitude'].min(), subset_data['Latitude'].max()])),
+        color='type:N',  # Optional: color points by type or some other field
+        tooltip=['type:N', 'subtype:N', 'Longitude:Q', 'Latitude:Q']  # Show info on hover
+        )
+        return chart

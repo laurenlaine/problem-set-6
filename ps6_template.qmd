@@ -111,7 +111,7 @@ df=pd.read_csv(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\waze_dat
 def count_null(data):
   count_null=[]
   for column in data:
-    num_null=len(data[data[column]==NULL])
+    num_null=len(data[data[column]=='NULL'])
     count_null.append(num_null)
   return count_null
 ```
@@ -138,9 +138,9 @@ def not_na(data):
   return count_not_na
 ```
 ```{python}
-#na_counts=count_na(df)
-#not_na_counts=not_na(df)
-#variables=df.columns
+na_counts=count_na(df)
+not_na_counts=not_na(df)
+variables=df.columns
 counts = pd.DataFrame({'Variable': variables, 'Na_Count': na_counts, 'Not_Na_Count': not_na_counts
 })
 ```
@@ -426,7 +426,7 @@ test=check[check['updated_subtype']=='JAM_LIGHT_TRAFFIC']
 ```
 
 ```{python}
-top_ten_df.to_csv(r"C:\Users\laine\OneDrive\Documents\GitHub\student30538\problem_sets\ps6\top_alerts_map\top_alerts_map.csv")
+top_ten_df.to_csv(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\top_alerts_map\top_alerts_map.csv")
 ```
 The data is filtered based on type and subtype and then aggregated by binned latitude and binned longitude. 
 The dataframe has 155 rows. It has 16 combinations of types and subtypes but type Jam with subtype Jam Light Traffic only has 5 observations so the final length isn't divisible by 10. 
@@ -470,7 +470,9 @@ geo_data = alt.Data(values=chicago_geojson["features"])
 chi_map=alt.Chart(geo_data).mark_geoshape(
   fill='lightgray',
   stroke='white'
-)
+).properties(
+  width=300,
+  height=300)
 chi_map+plot_heavy_traffic
 ```
 
@@ -479,12 +481,34 @@ chi_map+plot_heavy_traffic
 a. 
 
 ```{python}
-
+choices=[]
+for i in merged['updated_type'].unique():
+  type_set=merged[merged['updated_type']==i]
+  for j in type_set['updated_subtype'].unique():
+    choice=f'{i}: {j}'
+    choices.append(choice)
 ```
 
+```{python}
+choices
+```
+
+```{python}
+from PIL import Image
+dropdown_screenshot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\type_subtype_dropdown_screenshot.png")
+dropdown_screenshot.show()
+```
+There are 16 type and subtype combinations. 
+
+```{python}
+test=merged[merged['type']=='ACCIDENT']
+test=test[test['subtype']=='Unclassified']
+test.head()
+```
 b. 
 ```{python}
-
+app_1_plot_screenshot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App1_plot.png")
+app_1_plot_screenshot.show()
 ```
 
 c. 

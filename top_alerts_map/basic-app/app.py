@@ -67,7 +67,7 @@ def server(input, output, session):
         # Get the subset data and pass it to the table render function
         return subset()  # No need to use subset() as a function, it's already a DataFrame
     
-    @reactive.effect
+    @reactive.calc
     def chi_geo_data():
         # Load the GeoJSON data for future use in a geospatial plot
         file_path = r"C:\Users\laine\OneDrive\Documents\GitHub\student30538\problem_sets\ps6\top_alerts_map\Boundaries - Neighborhoods.geojson"

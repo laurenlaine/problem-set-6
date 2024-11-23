@@ -71,18 +71,23 @@ def server(input, output, session):
     @render_altair
     def plot():
         data=subset()
+        min_long=41.65
+        max_long=42.0
+        min_lat=-87.84
+        max_lat=-87.58
+
         points=chart = alt.Chart(data).mark_point().encode(
-        alt.X('Longitude:Q', scale=alt.Scale(domain=[data['Longitude'].min(), data['Longitude'].max()])),
-        alt.Y('Latitude:Q', scale=alt.Scale(domain=[data['Latitude'].min(), data['Latitude'].max()]))).properties(
-  width=500,
-  height=400)
+        alt.X('Longitude:Q', scale=alt.Scale(domain=[min_long, max_long])),
+        alt.Y('Latitude:Q', scale=alt.Scale(domain=[min_lat, max_lat])),
+        alt.Size('Count:Q')
+        )
 
         chi_map=alt.Chart(chi_geo_data()).mark_geoshape(
         fill='lightgray',
         stroke='white'
         ).encode().properties(
-            width=500,
-            height=400)
+            width=350,
+            height=500)
         
         full_plot=chi_map+points
         return full_plot

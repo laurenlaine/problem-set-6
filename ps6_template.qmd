@@ -433,11 +433,21 @@ The dataframe has 155 rows. It has 16 combinations of types and subtypes but typ
 
 
 2. 
+
+```{python}
+max_long=top_ten_df['Longitude'].max()
+min_long=top_ten_df['Longitude'].min()
+print(min_long, max_long)
+max_lat=top_ten_df['Latitude'].max()
+min_lat=top_ten_df['Latitude'].min()
+print(min_lat, max_lat)
+```
 ```{python}
 subset_jam_heavy_traffic=top_ten_df[(top_ten_df['type']=='JAM') &(top_ten_df['subtype']=='JAM_HEAVY_TRAFFIC')]
 plot_heavy_traffic=alt.Chart(subset_jam_heavy_traffic).mark_point().encode(
-  alt.X('Longitude:Q').scale(domain=(subset_jam_heavy_traffic['Longitude'].min(), subset_jam_heavy_traffic['Longitude'].max())),
-  alt.Y('Latitude:Q').scale(domain=(subset_jam_heavy_traffic['Latitude'].min(), subset_jam_heavy_traffic['Latitude'].max()))
+  alt.X('Longitude:Q').scale(domain=(min_long, max_long)),
+  alt.Y('Latitude:Q').scale(domain=(min_lat, max_lat)),
+  alt.Size('Count:Q')
 )
 plot_heavy_traffic
 ```
@@ -471,8 +481,9 @@ chi_map=alt.Chart(geo_data).mark_geoshape(
   fill='lightgray',
   stroke='white'
 ).properties(
-  width=300,
-  height=300)
+  width=375,
+  height=450
+)
 chi_map+plot_heavy_traffic
 ```
 
@@ -513,35 +524,116 @@ app_1_plot_screenshot.show()
 
 c. 
 ```{python}
-
+app_1_road_closed_events_screenshot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App1_road_closed_events.png")
+app_1_plot_screenshot.show()
 ```
 
+
 d. 
+Where do the most major accidents occur? 
 ```{python}
+app_1_major_accidents_screenshot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App1_major_accidents.png")
+app_1_major_accidents_screenshot.show()
 
 ```
 
 e. 
+It may also be interesting to look at roadType to see if there are any common road types that involved in accidents, or other alerts. That could be incorporated into the app using color as roadtype. 
 
 # App #2: Top Location by Alert Type and Hour Dashboard (20 points) {-}
 
 1. 
 
-a. 
+a. I don't think it would be a good idea to collapse the dataset by this column for two reasons. First, time is very specific if grouped each different time would be seperate, ex not grouped by hour or number of hours. This wouldn't be very helpful in making trends readily apparent without having to inspect each specific time. Also the column has times in UTC not in Chicago's central time so the time could actually be misleading. 
 
 
     
 b. 
 ```{python}
+merged['ts']=pd.to_datetime(merged['ts'])
+merged['hour']=merged['ts'].map(lambda x: x.time().hour)
 
+```
+
+```{python}
+top_tens_by_hour=[]
+```
+```{python}
+
+for x in merged['hour'].unique():
+  hour_set=merged[merged['hour']==x]
+  for i in hour_set['updated_type'].unique():
+    type_set=hour_set[hour_set['updated_type']==i]
+    for j in type_set['updated_subtype'].unique():
+      subset = type_set[type_set['updated_subtype']==j]
+      subset_grouped=subset.groupby(['binned_lat', 'binned_long']).size()
+      subset_grouped=subset_grouped.reset_index()
+      subset_grouped.columns=['Latitude', 'Longitude', 'Count']
+      subset_grouped=subset_grouped.sort_values(by='Count', ascending=False)
+      subset_grouped=subset_grouped.head(10)
+      subset_grouped['hour']=x
+      subset_grouped['type']=i
+      subset_grouped['subtype']=j
+      top_tens_by_hour.append(subset_grouped)
+      print(f'finished {x}:{i}:{j}, length{len(subset_grouped)}')
+
+top_ten_by_hourdf=pd.concat(top_tens_by_hour, ignore_index=True)
+```
+
+```{python}
+top_ten_by_hourdf.to_csv(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\top_alerts_map_byhour\top_alerts_map_byhour.csv")
 ```
 
 c.
 
 ```{python}
-
+heavy_traffic_at_1=top_ten_by_hourdf[top_ten_by_hourdf['hour']==1]
+heavy_traffic_at_1=heavy_traffic_at_1[heavy_traffic_at_1['type']=='JAM']
+heavy_traffic_at_1=heavy_traffic_at_1[heavy_traffic_at_1['subtype']=='JAM_HEAVY_TRAFFIC']
 ```
-    
+  
+
+```{python}
+traffic_at_1_plot=alt.Chart(heavy_traffic_at_1).mark_point().encode(
+  alt.X('Longitude:Q').scale(domain=(min_long, max_long)),
+  alt.Y('Latitude:Q').scale(domain=(min_lat, max_lat)),
+  alt.Size('Count:Q'))
+
+chi_map+traffic_at_1_plot
+```
+
+```{python}
+heavy_traffic_at_6=top_ten_by_hourdf[top_ten_by_hourdf['hour']==6]
+heavy_traffic_at_6=heavy_traffic_at_6[heavy_traffic_at_6['type']=='JAM']
+heavy_traffic_at_6=heavy_traffic_at_6[heavy_traffic_at_6['subtype']=='JAM_HEAVY_TRAFFIC']
+```
+  
+
+```{python}
+traffic_at_6_plot=alt.Chart(heavy_traffic_at_6).mark_point().encode(
+  alt.X('Longitude:Q').scale(domain=(min_long, max_long)),
+  alt.Y('Latitude:Q').scale(domain=(min_lat, max_lat)),
+  alt.Size('Count:Q'))
+
+chi_map+traffic_at_6_plot
+```
+
+```{python}
+heavy_traffic_at_12=top_ten_by_hourdf[top_ten_by_hourdf['hour']==12]
+heavy_traffic_at_12=heavy_traffic_at_12[heavy_traffic_at_12['type']=='JAM']
+heavy_traffic_at_12=heavy_traffic_at_12[heavy_traffic_at_12['subtype']=='JAM_HEAVY_TRAFFIC']
+```
+  
+
+```{python}
+traffic_at_12_plot=alt.Chart(heavy_traffic_at_12).mark_point().encode(
+  alt.X('Longitude:Q').scale(domain=(min_long, max_long)),
+  alt.Y('Latitude:Q').scale(domain=(min_lat, max_lat)),
+  alt.Size('Count:Q'))
+
+chi_map+traffic_at_12_plot
+```
+
 
 2.
 

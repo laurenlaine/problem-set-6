@@ -24,7 +24,6 @@ app_ui = ui.page_fluid(
                              'HAZARD: On Shoulder',
                              'HAZARD: Weather']),
     ui.input_slider(id='hour',label= "Choose an Hour (UTC)", min=1, max=24, value=1),
-    ui.output_text_verbatim('hour_check'),
     output_widget('plot'))
 
 
@@ -71,7 +70,7 @@ def server(input, output, session):
     
     @reactive.calc
     def chi_geo_data():
-        file_path = r"C:\Users\laine\OneDrive\Documents\GitHub\student30538\problem_sets\ps6\top_alerts_map\Boundaries - Neighborhoods.geojson"
+        file_path = r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Boundaries - Neighborhoods .geojson"
         with open(file_path) as f:
             chicago_geojson = json.load(f)
 

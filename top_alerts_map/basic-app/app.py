@@ -1,13 +1,12 @@
 from shiny import App, render, ui, reactive
-import re
+from shinywidgets import render_altair, output_widget
 import pandas as pd
 import altair as alt
-from shinywidgets import render_altair, output_widget
 import json
-
+import re
 
 app_ui = ui.page_fluid(
-    ui.input_select(id='type_subtype', label='Choose a type and subtype',
+        ui.input_select(id='type_subtype', label='Choose a type and subtype',
                     choices=['JAM: Unclassified',
                              'JAM: JAM_HEAVY_TRAFFIC',
                              'JAM: JAM_MODERATE_TRAFFIC',
@@ -24,85 +23,74 @@ app_ui = ui.page_fluid(
                              'HAZARD: ON_ROAD',
                              'HAZARD: On Shoulder',
                              'HAZARD: Weather']),
-    ui.output_text_verbatim('subtype_check'),
-    output_widget('test'),
-    ui.output_table('table')
+    output_widget('plot'),
+    
 )
 
+
 def server(input, output, session):
-    
-    @reactive.effect
+    @reactive.calc
     def choice():
         return input.type_subtype()
     
-    @reactive.effect
+    @reactive.calc
     def type():
         return choice().split(':')[0]
     
-    @reactive.effect
+    @reactive.calc
     def subtype():
         subtype = choice().split(':')[1]
         subtype = subtype.replace(" ", "")  # Remove extra spaces
         return subtype
     
-    @render.text
-    def subtype_check():
-        return subtype()  # Output the subtype as text
+    @reactive.calc
+    def df():
+        df=pd.read_csv(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\top_alerts_map\top_alerts_map.csv")
+        return df
     
-    @reactive.value
-    def full_df():
-        return pd.read_csv(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\top_alerts_map\top_alerts_map.csv")
-    
-    @reactive.value
+    @reactive.calc
     def subset():
         # Filter the dataframe based on selected type and subtype
         current_type = type()
         current_subtype = subtype()
-        type_subset = full_df()[full_df()['type'] == current_type]
+        full_df=df()
+        type_subset = full_df[full_df['type'] == current_type]
         subset = type_subset[type_subset['subtype'] == current_subtype]
         return subset
     
-    @render.table
-    def table():
-        # Get the subset data and pass it to the table render function
-        return subset()  # No need to use subset() as a function, it's already a DataFrame
     
     @reactive.calc
     def chi_geo_data():
-        # Load the GeoJSON data for future use in a geospatial plot
-        file_path = r"C:\Users\laine\OneDrive\Documents\GitHub\student30538\problem_sets\ps6\top_alerts_map\Boundaries - Neighborhoods.geojson"
+        file_path = r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Boundaries - Neighborhoods .geojson"
         with open(file_path) as f:
             chicago_geojson = json.load(f)
 
         geo_data = alt.Data(values=chicago_geojson["features"])
         return geo_data
-    
+
     @render_altair
-    def test():
-        # Ensure we are accessing the reactive data properly
-        full_data = full_df()  # This will access the reactive value directly
+    def plot():
+        data=subset()
+        min_lat=41.65
+        max_lat=42.0
+        min_long=-87.84
+        max_long=-87.58
 
-        if full_data.empty:
-            return alt.Chart()  # Return an empty chart if the data is empty
-        
-        # Filter data based on the selected type and subtype
-        current_type = type()
-        current_subtype = subtype()
-        type_subset = full_data[full_data['type'] == current_type]
-        subset = type_subset[type_subset['subtype'] == current_subtype]
-
-        if subset.empty:
-            return alt.Chart()  # Return an empty chart if the subset is empty
-
-        # Create an Altair chart for the subset data
-        plot = alt.Chart(subset()).mark_point().encode(
-            alt.X('Longitude:Q', title='Longitude'),
-            alt.Y('Latitude:Q', title='Latitude')
+        points=chart = alt.Chart(data).mark_point().encode(
+        alt.X('Longitude:Q', scale=alt.Scale(domain=[min_long, max_long])),
+        alt.Y('Latitude:Q', scale=alt.Scale(domain=[min_lat, max_lat])),
+        alt.Size('Count:Q')
         )
+
+        chi_map=alt.Chart(chi_geo_data()).mark_geoshape(
+        fill='lightgray',
+        stroke='white'
+        ).encode().properties(
+            width=350,
+            height=500)
         
-        return plot
-
-
+        full_plot=chi_map+points
+        return full_plot
 
 
 app = App(app_ui, server)

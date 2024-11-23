@@ -1,7 +1,9 @@
 ---
 title: "Problem Set 6 - Waze Shiny Dashboard"
-author: "Peter Ganong, Maggie Shi, and Andre Oviedo"
-date: today
+geometry: margin=0.75 in
+fontsize: 10pt
+author: "Lauren Laine"
+date: '11/23/2024'
 format: 
   pdf:
     include-in-header: 
@@ -25,8 +27,9 @@ We use (`*`) to indicate a problem that we think might be time consuming.
 
 1. "This submission is my work alone and complies with the 30538 integrity
 policy." Add your initials to indicate your agreement: \*\*\_\_\*\*
+LL
 2. "I have uploaded the names of anyone I worked with on the problem set **[here](https://docs.google.com/forms/d/185usrCREQaUbvAXpWhChkjghdGgmAZXA3lPWpXLLsts/edit)**"  \*\*\_\_\*\* (2 point)
-3. Late coins used this pset: \*\*\_\_\*\* Late coins left after submission: \*\*\_\_\*\*
+3. Late coins used this pset: \*\*\_\_\*\* 0 Late coins left after submission: \*\*\_\_\*\* 1
 
 4. Before starting the problem set, make sure to read and agree to the terms of data usage for the Waze data [here](https://canvas.uchicago.edu/courses/59054/quizzes/130617).
 
@@ -41,7 +44,7 @@ policy." Add your initials to indicate your agreement: \*\*\_\_\*\*
 
 ```{python}
 #| echo: true
-#| eval: false
+#| eval: true
 
 def print_file_contents(file_path):
     """Print contents of a file."""
@@ -59,10 +62,18 @@ def print_file_contents(file_path):
         print("```python") 
         print(f"Error reading file: {e}")
         print("```")
-
-print_file_contents("./top_alerts_map_byhour/app.py") # Change accordingly
 ```
-
+```{python}
+print_file_contents(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\top_alerts_map\basic-app\app.py") 
+```
+App 2 Code:
+```{python}
+print_file_contents(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\top_alerts_map_byhour\basic-app\app.py")
+```
+App 3 Code:
+```{python}
+print_file_contents(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\top_alerts_map_byhour_sliderrange\basic-app\app.py")
+```
 ```{python} 
 #| echo: false
 
@@ -311,9 +322,7 @@ hierarchical.tail(10)
 merged=df.merge(hierarchical, on=['type','subtype'], how='left')
 ```
 
-```{python}
-merged.head()
-```
+
 4. 
 
 ```{python}
@@ -357,10 +366,6 @@ def latitude(txt):
 ```{python}
 merged['latitude']=merged['geoWKT'].map(latitude)
 merged['longitude']=merged['geoWKT'].map(longitude)
-```
-
-```{python}
-merged.head()
 ```
 
 b. 
@@ -415,7 +420,7 @@ for i in merged['updated_type'].unique():
     subset_grouped['type']=i
     subset_grouped['subtype']=j
     top_tens.append(subset_grouped)
-    print(f'finished {i}:{j}, length{len(subset_grouped)}')
+    
 
 top_ten_df=pd.concat(top_tens, ignore_index=True)
 ```
@@ -504,12 +509,8 @@ for i in merged['updated_type'].unique():
 #print choices to put in choices list in the app
 choices
 ```
+![Dropdown Menu](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\type_subtype_dropdown_screenshot.png)
 
-```{python}
-from PIL import Image
-dropdown_screenshot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\type_subtype_dropdown_screenshot.png")
-dropdown_screenshot.show()
-```
 There are 16 type and subtype combinations. 
 
 ```{python}
@@ -518,25 +519,16 @@ test=test[test['subtype']=='Unclassified']
 test.head()
 ```
 b. 
-```{python}
-app_1_plot_screenshot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App1_plot.png")
-app_1_plot_screenshot.show()
-```
+![App1 Heavy Traffic](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App1_plot.png)
 
 c. 
-```{python}
-app_1_road_closed_events_screenshot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App1_road_closed_events.png")
-app_1_plot_screenshot.show()
-```
+![Road Closed Events](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App1_road_closed_events.png)
 
 
 d. 
 Where do the most major accidents occur? 
-```{python}
-app_1_major_accidents_screenshot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App1_major_accidents.png")
-app_1_major_accidents_screenshot.show()
+![Major Accidents](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App1_major_accidents.png)
 
-```
 
 e. 
 It may also be interesting to look at roadType to see if there are any common road types that involved in accidents, or other alerts. That could be incorporated into the app using color as roadtype. 
@@ -576,7 +568,7 @@ for x in merged['hour'].unique():
       subset_grouped['type']=i
       subset_grouped['subtype']=j
       top_tens_by_hour.append(subset_grouped)
-      print(f'finished {x}:{i}:{j}, length{len(subset_grouped)}')
+      
 
 top_ten_by_hourdf=pd.concat(top_tens_by_hour, ignore_index=True)
 ```
@@ -639,43 +631,21 @@ chi_map+traffic_at_12_plot
 2.
 
 a. 
-
-```{python}
-app2_ui=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App2_slider_dropdown.png")
-app2_ui.show()
-```
+![App2 UI](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App2_slider_dropdown.png)
 
 b. 
-```{python}
-traffic_at_1_screenshot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App2_at_1.png")
-traffic_at_1_screenshot.show()
-```
-
-```{python}
-traffic_at_6_screenshot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App2_at_6.png")
-traffic_at_6_screenshot.show()
-```
-
-```{python}
-traffic_at_12_screenshot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App2_at_12.png")
-traffic_at_12_screenshot.show()
-```
+![Heavy Traffic at 1:00](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App2_at_1.png)
+![Heavy Traffic at 6:00](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App2_at_6.png)
+![Heavy Traffic at 12:00](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App2_at_12.png)
 
 c. 
 From the dashboard it appears that construction is done more at night than in the morning.
 
 3:00am UTC is equivalent to 9:00am CST in Chicago. 
-
-```{python}
-construction_at_3=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\construction_at_3.png")
-construction_at_3.show()
-```
+![Construction at 3:00](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\construction_at_3.png)
 
 15:00 UTC is equivalent to 3:00pm or 9:00pm CST in Chicago.
-```{python}
-construction_at_15=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\construction_at_15.png")
-construction_at_15.show()
-```
+![Construction at 15:00](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\construction_at_15.png)
 
 # App #3: Top Location by Alert Type and Hour Dashboard (20 points){-}
 
@@ -710,58 +680,30 @@ chi_map+heavy_traffic_6_to_9
 
 ```
 
-```{python}
-merged.head
-```
 2. 
 
 a. 
-
-```{python}
-app3_ui=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_ui.png")
-app3_ui.show()
-```
+![App3 UI](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_ui.png)
 
 b. 
+![App3 Heavy Traffic 6 to 9](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_heavy_traffic_6_to_9.png)
 
-```{python}
-app3_heavy_traffic=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_heavy_traffic_6_to_9.png")
-app3_heavy_traffic.show
-```
-    
 3. 
 
 a. 
+![Switch Button](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_switch_button.png)
 
-```{python}
-app3_switch_button=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_switch_button.png")\
-app3_switch_button.show()
-```
 The possible values for input.switch_button are True meaning the button would start switched to hour range and False meaning the button would start switched to just hour.    
 
 b. 
-
-```{python}
-app3_one_hour=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_one_hour.png")
-app3_one_hour.show()
-```
-
-```{python}
-app3_hour_range=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_range_of_hours.png")
-app3_hour_range.show()
-```
+![Hour Range Not Switched](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_one_hour.png)
+![Hour Range Switched](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_range_of_hours.png)
 
 c. 
+![Plot with Single Hour](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_plot_one_hour.png)
+![Plot with Hour Range](C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_plot_hour_range.png)
 
-```{python}
-app3_one_hour_plot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_plot_one_hour.png")
-app3_one_hour_plot.show()
-```
-
-```{python}
-app3_hour_range_plot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App3_plot_hour_range.png")
-app3_hour_range_plot.show()
-```
 
 
 d.
+In order to make the plot displayed in the instructions, you would need to code a new variable for morning or afternoon based on hours. The hours are a little subjective but it could be from around 6:00am-12:pm is morning and 12:00pm-5:00pm is afternoon. Then you would have to plot the new variable using alt.Color to distinguish between morning and afternoon. You would also have to code either night, or Na for hours that fall outside of both of these ranges. You could filter out all night/Na before graphing so you are left with only morning and afternoon alerts. 

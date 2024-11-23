@@ -71,10 +71,10 @@ def server(input, output, session):
     @render_altair
     def plot():
         data=subset()
-        min_long=41.65
-        max_long=42.0
-        min_lat=-87.84
-        max_lat=-87.58
+        min_lat=41.65
+        max_lat=42.0
+        min_long=-87.84
+        max_long=-87.58
 
         points=chart = alt.Chart(data).mark_point().encode(
         alt.X('Longitude:Q', scale=alt.Scale(domain=[min_long, max_long])),

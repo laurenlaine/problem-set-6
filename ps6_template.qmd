@@ -639,13 +639,42 @@ chi_map+traffic_at_12_plot
 
 a. 
 
-
+```{python}
+app2_ui=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App2_slider_dropdown.png")
+app2_ui.show()
+```
 
 b. 
+```{python}
+traffic_at_1_screenshot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App2_at_1.png")
+traffic_at_1_screenshot.show()
+```
 
+```{python}
+traffic_at_6_screenshot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App2_at_6.png")
+traffic_at_6_screenshot.show()
+```
+
+```{python}
+traffic_at_12_screenshot=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\App2_at_12.png")
+traffic_at_12_screenshot.show()
+```
 
 c. 
+From the dashboard it appears that construction is done more at night than in the morning. However this answer is concerning because logically construction should usually take place during the day. 
 
+3:00am UTC is equivalent to 9:00am CST in Chicago. 
+
+```{python}
+construction_at_3=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\construction_at_3.png")
+construction_at_3.show()
+```
+
+15:00 UTC is equivalent to 3:00pm or 9:00pm CST in Chicago.
+```{python}
+construction_at_15=Image.open(r"C:\Users\laine\OneDrive\Documents\GitHub\problem-set-6\Screenshots\construction_at_15.png")
+construction_at_15.show()
+```
 
 # App #3: Top Location by Alert Type and Hour Dashboard (20 points){-}
 
